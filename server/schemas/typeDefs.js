@@ -49,3 +49,5 @@ type Mutation { #mutations that can be used, i.e. changes to data, are put into 
 `;
 
 module.exports = typeDefs;
+
+//note to self: look at the original code and server and study it. this advice is also in the readme.
