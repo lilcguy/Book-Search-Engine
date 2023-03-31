@@ -22,15 +22,6 @@ type Book {
 
 }
 
-input saveBookContent { #After you define an input type, any number of different object fields can accept that type as an argument:
-    authors: [String]
-    description: String
-    title: String
-    bookId: String
-    image: String
-    link: String
-}
-
 type Auth {
     token: String
     user: User #references User type
@@ -43,7 +34,7 @@ type Query { #type query lists all of available queries that clientside can make
 type Mutation { # the Mutation type defines entry points for write operations.
     login(email: String, password: String): Auth #email and password are parameters, returns a type Auth (a user, and a token)
     addUser(username: String, email: String, password: String): Auth
-    saveBook(content: saveBookContent): User #used input type saveBookContent here
+    saveBook(authors: [String], description: String, title: String, bookId: String, image: String, link: String): User
     removeBook(bookId: String): User
 
 }
