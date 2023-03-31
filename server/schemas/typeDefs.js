@@ -1,11 +1,19 @@
-//we define what we want
-
+//import graphQL
+// GraphQL server uses a schema to describe the shape of your available data.
 const { gql } = require('apollo-server-express');
 
-const typeDefs = gql`
+const typeDefs = gql `
 
-type Book { 
-    bookId: ID
+type User {
+    _id: ID #mongodb uses _id
+    username: String
+    email: String
+    bookCount: Int
+    savedBooks: [Book] #references an array of Book type
+}
+
+type Book {
+    bookId: String
     authors: [String]
     description: String
     title: String
@@ -14,50 +22,32 @@ type Book {
 
 }
 
-type User {
-    _id: ID
-    username: String
-    email: String
-    bookCount: Int
-    savedBooks: [Book]
-
+input saveBookContent { #After you define an input type, any number of different object fields can accept that type as an argument:
+    authors: [String]
+    description: String
+    title: String
+    bookId: String
+    image: String
+    link: String
 }
 
 type Auth {
     token: String
-    user: User
+    user: User #references User type
+}
 
+type Query { #type query lists all of available queries that clientside can make and what is returned.
+    me(userId: ID): User #references User type ##how do i get current user logged in??? use type Auth?
+}
+
+type Mutation { # the Mutation type defines entry points for write operations.
+    login(email: String, password: String): Auth #email and password are parameters, returns a type Auth (a user, and a token)
+    addUser(username: String, email: String, password: String): Auth
+    saveBook(content: saveBookContent): User #used input type saveBookContent here
+    removeBook(bookId: String): User
 
 }
 
-
-type Query { #queries that can be used are put into this object
-    #me : which returns a User type
-    me: User
-
-}
-
-type Mutation { #mutations that can be used, i.e. changes to data, are put into this object.
-# login: Accepts an email and password as parameters; returns an Auth type.
-login(email: String, password: String): Auth
-
-#addUser: Accepts a username, email, and password as parameters; returns an Auth type.
-addUser(username: String, email: String, password: String): Auth
-
-# saveBook: Accepts a book author's array, description, title, bookId, image, and link as parameters; returns a User type. (Look into creating what's known as an input type to handle all of these parameters!)
-saveBook(authors: [String], description: String, title: String, bookId: ID, link: String): User
-#removeBook: Accepts a book's bookId as a parameter; returns a User type.
-removeBook(bookID: ID): User
-
-}
-
-
-
-`;
+`
 
 module.exports = typeDefs;
-
-
-//second note to self: use different branches for shit to get used to it.
-
-//note to self: look at the original code and server and study it. this advice is also in the readme.
